@@ -18,3 +18,15 @@ if(page==='dependents')c.innerHTML='<div class="card"><h2>Dependents</h2><p>Samp
 document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.page){page=b.dataset.page;document.querySelectorAll('[data-page]').forEach(n=>n.setAttribute('aria-current',n===b?'page':'false'));notify('');render()}if(b.dataset.toggle){const p=state.projects.find(p=>p.id===Number(b.dataset.toggle));p.done=!p.done;saveState('companyportal-demo-v1',state);render();notify('Project status updated.')}});
 document.addEventListener('submit',e=>{if(e.target.id!=='project-form')return;e.preventDefault();const name=document.querySelector('#name').value.trim();if(!name)return;state.projects.push({id:Date.now(),name,owner:document.querySelector('#owner').value,date:document.querySelector('#date').value,done:false});saveState('companyportal-demo-v1',state);render();notify('Project created and assigned.')});
 document.querySelector('#reset').addEventListener('click',()=>{state=structuredClone(initial);saveState('companyportal-demo-v1',state);render();notify('Demo reset to sample data.')});render();
+
+// Simulate entry and logout without collecting credentials or creating a server session.
+// Opening the demo always starts at the sample-account screen.
+function setDemoEntry(loggedIn){
+ document.querySelector('#login-screen').hidden=loggedIn;
+ document.querySelector('#demo-app').hidden=!loggedIn;
+ document.querySelector('#demo-footer').hidden=!loggedIn;
+ const target=loggedIn?document.querySelector('#demo-app h1'):document.querySelector('#login-title');
+ target.setAttribute('tabindex','-1'); target.focus();
+}
+document.querySelector('#demo-login').addEventListener('click',()=>setDemoEntry(true));
+document.querySelector('#demo-logout').addEventListener('click',()=>setDemoEntry(false));
