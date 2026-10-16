@@ -19,6 +19,8 @@ if(page==='assign')c.innerHTML=`<form class="card" id="assignment-form"><h2>Assi
 if(page==='remove')c.innerHTML=`<div class="card"><h2>Complete / remove projects</h2>${projectTable()}<p class="muted">Complete or reopen sample projects above. Permanent deletion is disabled.</p><button disabled>Delete project permanently</button></div>`;
 if(page==='manager')c.innerHTML='<form class="card" id="salary-form"><h2>Manager access — salary entry</h2><label for="salary-employee">Employee</label><input id="salary-employee" value="Jordan Demo" readonly><label for="salary-value">Annual salary ($)</label><input id="salary-value" type="number" min="0" max="1000000" required value="75000"><label for="bonus-value">Bonus ($)</label><input id="bonus-value" type="number" min="0" max="1000000" required value="3000"><button>Save demo salary</button><p class="muted">Fictional compensation; edits stay in this browser.</p></form>';
 if(page==='dependents')c.innerHTML+='<div class="card"><h2>Manage dependents</h2><label for="dependent-name">Name</label><input id="dependent-name" value="Taylor Demo" readonly><label for="dependent-relation">Relationship</label><input id="dependent-relation" value="Partner" readonly><button disabled>Add dependent</button> <button disabled>Remove dependent</button><p class="muted">Dependent changes are disabled in this public demo.</p></div>';
+if(page==='edit'&&state.department)document.querySelector('#department').value=state.department;
+if(page==='profile'&&state.department)c.innerHTML=c.innerHTML.replace('<dd>Operations</dd>','<dd>'+escapeHTML(state.department)+'</dd>');
 if(page==='profile'&&state.profileName)c.innerHTML=c.innerHTML.replace('Jordan Demo',escapeHTML(state.profileName));
 if(page==='salary'&&state.salary)c.innerHTML=c.innerHTML.replace('$75,000',escapeHTML('$'+Number(state.salary.base).toLocaleString('en-US'))).replace('$3,000',escapeHTML('$'+Number(state.salary.bonus).toLocaleString('en-US')));
 
@@ -43,7 +45,7 @@ document.querySelector('#demo-logout').addEventListener('click',()=>setDemoEntry
 document.addEventListener('submit',e=>{
  if(!['employee-form','assignment-form','salary-form'].includes(e.target.id))return;
  e.preventDefault();
- if(e.target.id==='employee-form')state.profileName=document.querySelector('#employee-name').value.trim();
+ if(e.target.id==='employee-form'){state.profileName=document.querySelector('#employee-name').value.trim();state.department=document.querySelector('#department').value;}
  if(e.target.id==='assignment-form'){const project=state.projects.find(p=>p.id===Number(document.querySelector('#assignment-project').value));if(project)project.owner=document.querySelector('#assignment-owner').value;}
  if(e.target.id==='salary-form')state.salary={base:Number(document.querySelector('#salary-value').value),bonus:Number(document.querySelector('#bonus-value').value)};
  saveState('companyportal-demo-v1',state);notify('Sample record saved in this browser.');
